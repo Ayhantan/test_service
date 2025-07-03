@@ -1,0 +1,123 @@
+// src/App.tsx
+
+import { useState } from 'react';
+import { UserService } from './services/UserService';
+
+function App() {
+  const [result, setResult] = useState<any>(null);
+
+  // 🔑 CRUD
+  const handleGetUser = async () => {
+    const data = await UserService.getOne(1);
+    setResult(data);
+  };
+
+  const handleGetAll = async () => {
+    const data = await UserService.getAll();
+    setResult(data);
+  };
+
+  const handleCreate = async () => {
+    const data = await UserService.create({ name: 'John Doe', email: 'john@example.com' });
+    setResult(data);
+  };
+
+  const handleUpdate = async () => {
+    const data = await UserService.update(1, { name: 'Updated Name' });
+    setResult(data);
+  };
+
+  const handleDelete = async () => {
+    await UserService.delete(1);
+    setResult('User deleted!');
+  };
+
+  // 🔑 Auth
+  const handleLogin = async () => {
+    const data = await UserService.login({ email: 'test@example.com', password: 'password' });
+    setResult(data);
+  };
+
+  const handleLogout = async () => {
+    const data = await UserService.logout();
+    setResult(data);
+  };
+
+  const handleRefreshToken = async () => {
+    const data = await UserService.refreshToken();
+    setResult(data);
+  };
+
+  // 🔑 Profil
+  const handleGetProfile = async () => {
+    const data = await UserService.getProfile();
+    setResult(data);
+  };
+
+  const handleChangePassword = async () => {
+    const data = await UserService.changePassword({
+      oldPassword: 'oldpass',
+      newPassword: 'newpass',
+    });
+    setResult(data);
+  };
+
+  const handleUploadAvatar = async () => {
+    // Fake file: gerçekte input file kullanman gerekir
+    const blob = new Blob(['avatar-content'], { type: 'text/plain' });
+    const file = new File([blob], 'avatar.txt', { type: 'text/plain' });
+    const data = await UserService.uploadAvatar(file);
+    setResult(data);
+  };
+
+  // 🔑 Yetki/Rol
+  const handleAssignRole = async () => {
+    const data = await UserService.assignRole(1, 2);
+    setResult(data);
+  };
+
+  const handleGetRoles = async () => {
+    const data = await UserService.getRoles(1);
+    setResult(data);
+  };
+
+  const handleToggleActive = async () => {
+    const data = await UserService.toggleActive(1, true);
+    setResult(data);
+  };
+
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1>✅ ServiceManager & UserService Playground</h1>
+
+      <h3>🔑 CRUD</h3>
+      <button onClick={handleGetUser}>Get One</button>
+      <button onClick={handleGetAll}>Get All</button>
+      <button onClick={handleCreate}>Create</button>
+      <button onClick={handleUpdate}>Update</button>
+      <button onClick={handleDelete}>Delete</button>
+
+      <h3 style={{ marginTop: '2rem' }}>🔑 Auth</h3>
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleRefreshToken}>Refresh Token</button>
+
+      <h3 style={{ marginTop: '2rem' }}>🔑 Profile</h3>
+      <button onClick={handleGetProfile}>Get Profile</button>
+      <button onClick={handleChangePassword}>Change Password</button>
+      <button onClick={handleUploadAvatar}>Upload Avatar</button>
+
+      <h3 style={{ marginTop: '2rem' }}>🔑 Roles & Status</h3>
+      <button onClick={handleAssignRole}>Assign Role</button>
+      <button onClick={handleGetRoles}>Get Roles</button>
+      <button onClick={handleToggleActive}>Toggle Active</button>
+
+      <h3 style={{ marginTop: '2rem' }}>Result:</h3>
+      <pre style={{ background: '#f5f5f5', padding: '1rem', overflow: 'auto' }}>
+        {result ? JSON.stringify(result, null, 2) : 'No result yet.'}
+      </pre>
+    </div>
+  );
+}
+
+export default App;
